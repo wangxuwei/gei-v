@@ -17,10 +17,6 @@ snow.ui.registerComponent("mainScreen",
 			count = parseInt(count);
 			drawMotionChart(count);
 		});
-		$(".tableBtn").click(function(){
-			$(".table").html("Querying Data Please wait...");
-			drawTable();
-		});
 		
 		function getQuery(count){
 			var limitSQL = '';
@@ -31,18 +27,14 @@ snow.ui.registerComponent("mainScreen",
 			for(var i=2010; i<=2050;i++){
 				columns = columns + ","+"'"+i+"'";
 			}
-			var queryText = encodeURIComponent("SELECT "+columns+" FROM 869897 " + limitSQL);
+			var queryText = encodeURIComponent("SELECT "+columns+" FROM 882100 " + limitSQL);
 			var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq='  + queryText);
 			return query;
 		}
+		
 		function drawMotionChart(count) {
 			var query = getQuery(count);
 			query.send(getMotionChartDataCallback);
-		}
-		
-		function drawTable() {
-			var query = getQuery();
-			query.send(getTableDataCallback);
 		}
 		
 		function getMotionChartDataCallback(response) {
@@ -73,12 +65,7 @@ snow.ui.registerComponent("mainScreen",
 			}
 			data.addRows(rows);
 			var chart = new google.visualization.MotionChart($('.motion_chart')[0]);
-	        chart.draw(data, {width: 600, height:300});
-		}
-		
-		function getTableDataCallback(response) {
-			var table = new google.visualization.Table($('.table')[0]);
-			table.draw(response.getDataTable(), {showRowNumber: true});
+	        chart.draw(data, {width:1260, height:550});
 		}
 	}
 });
@@ -92,12 +79,9 @@ snow.ui.registerComponent("mainScreen",
     	<button class="motionChartBtn" data-rows='3'>show motion chart for 3 rows</button>
     	<button class="motionChartBtn" data-rows='10'>show motion chart for 10 rows</button>
     	<button class="motionChartBtn" data-rows=''>show motion chart for all rows</button>
-    	<button class="tableBtn">show table</button>
     </div>
 	<div>
-		<div class="motion_chart" style="width:600px;height:400px;border:1px solid;">Motion chart  (web server required)</div>
-		<br/>
-	    <div class="table" style="width:600px;height:400px;border:1px solid;">table</div>
+		<div class="motion_chart" style="width:1260px;height:550px;">Motion chart (web server required)</div>
 	</div>
 <div>
 </script>
