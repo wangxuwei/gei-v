@@ -10,13 +10,20 @@ snow.ui.registerComponent("mainScreen",
 		return $e;
 	}, 
 	postDisplay: function(){
+		
 		$(".motionChartBtn").click(function(){
 			$(".motion_chart").html("Querying Data Please wait...");
 			var $btn = $(this);
 			var count = $btn.attr("data-rows");
 			count = parseInt(count);
-			drawMotionChart(count);
+			drawChartFromMotionData(count);
 		});
+		
+		
+		function drawChart(count) {
+			var query = getQuery(count);
+			query.send(getDataCallback);
+		}
 		
 		function getQuery(count){
 			var limitSQL = '';
@@ -32,12 +39,7 @@ snow.ui.registerComponent("mainScreen",
 			return query;
 		}
 		
-		function drawMotionChart(count) {
-			var query = getQuery(count);
-			query.send(getMotionChartDataCallback);
-		}
-		
-		function getMotionChartDataCallback(response) {
+		function getDataCallback(response) {
 			var tableData = response.getDataTable();
 			var tableHeads = tableData.B;
 			var tableBodies = tableData.F;
@@ -66,6 +68,29 @@ snow.ui.registerComponent("mainScreen",
 			data.addRows(rows);
 			var chart = new google.visualization.MotionChart($('.motion_chart')[0]);
 	        chart.draw(data, {width:1260, height:550});
+		}
+		
+		/* -- new way to get data --*/
+		function drawChartFromMotionData(count) {
+			var query = getMotionQuery(count);
+			query.send(getMotionDataCallback);
+		}
+		
+		function getMotionQuery(count){
+			var limitSQL = '';
+			if(!isNaN(count)){
+				limitSQL = " LIMIT "+count;
+			}
+			var columns = "'Name','Year','Scenario','Category','SubCategory','Value'";
+			var queryText = encodeURIComponent("SELECT "+columns+" FROM " + gei.fusionTableId + limitSQL);
+			var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq='  + queryText);
+			return query;
+		}
+		
+		function getMotionDataCallback(response) {
+			var tableData = response.getDataTable();
+			var chart = new google.visualization.MotionChart($('.motion_chart')[0]);
+	        chart.draw(tableData, {width:1260, height:550});
 		}
 	}
 });
