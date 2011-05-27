@@ -1,0 +1,8 @@
+.motion_chart{
+	position:relative;
+}
+.motion_chart label{
+	position:absolute;
+	left:250px;
+	top:200px;
+}

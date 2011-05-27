@@ -12,86 +12,15 @@ snow.ui.registerComponent("mainScreen",
 	postDisplay: function(){
 		
 		$(".motionChartBtn").click(function(){
-			$(".motion_chart").html("Querying Data Please wait...");
 			var $btn = $(this);
-			var count = $btn.attr("data-rows");
-			count = parseInt(count);
-			drawChartFromMotionData(count);
+			var scenario = $btn.attr("data-scenario");
+			if(scenario == 'BAU'){
+				snow.ui.display("motionChart",{scenario:"BAU"},{parent:$(".flash_container.first")});
+			}else{
+				snow.ui.display("scenarioSelect");
+			}
 		});
 		
-		
-		function drawChart(count) {
-			var query = getQuery(count);
-			query.send(getDataCallback);
-		}
-		
-		function getQuery(count){
-			var limitSQL = '';
-			if(!isNaN(count)){
-				limitSQL = " LIMIT "+count;
-			}
-			var columns = "'Scenario','Category','SubCategory','Name'";
-			for(var i=2010; i<=2050;i++){
-				columns = columns + ","+"'"+i+"'";
-			}
-			var queryText = encodeURIComponent("SELECT "+columns+" FROM 882100 " + limitSQL);
-			var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq='  + queryText);
-			return query;
-		}
-		
-		function getDataCallback(response) {
-			var tableData = response.getDataTable();
-			var tableHeads = tableData.B;
-			var tableBodies = tableData.F;
-			var data = new google.visualization.DataTable();
-			data.addColumn('string', tableHeads[3].label);
-			data.addColumn('date', 'Date');
-			data.addColumn('number', 'value');
-			data.addColumn('string', tableHeads[0].label);
-	        data.addColumn('string', tableHeads[1].label);
-			data.addColumn('string', tableHeads[2].label);
-			var rows = [];
-			for(var i=0;i<tableBodies.length;i++){
-				var tableBody = tableBodies[i].c;
-				for(var j=4;j<tableHeads.length;j++){
-					var year = 2010 + j - 4;
-					var value = ""+tableBody[j].v;
-					value = value.replace(",","");
-					value = new Number(value);
-					if(isNaN(value)){
-						value = new Number(0);
-					}
-					var row = [tableBody[3].v,new Date(year,0,1),value.valueOf(),tableBody[0].v,tableBody[1].v,tableBody[2].v];
-					rows.push(row);
-				}
-			}
-			data.addRows(rows);
-			var chart = new google.visualization.MotionChart($('.motion_chart')[0]);
-	        chart.draw(data, {width:1260, height:550});
-		}
-		
-		/* -- new way to get data --*/
-		function drawChartFromMotionData(count) {
-			var query = getMotionQuery(count);
-			query.send(getMotionDataCallback);
-		}
-		
-		function getMotionQuery(count){
-			var limitSQL = '';
-			if(!isNaN(count)){
-				limitSQL = " LIMIT "+count;
-			}
-			var columns = "'Name','Year','Scenario','Category','SubCategory','Value'";
-			var queryText = encodeURIComponent("SELECT "+columns+" FROM " + gei.fusionTableId + limitSQL);
-			var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq='  + queryText);
-			return query;
-		}
-		
-		function getMotionDataCallback(response) {
-			var tableData = response.getDataTable();
-			var chart = new google.visualization.MotionChart($('.motion_chart')[0]);
-	        chart.draw(tableData, {width:1260, height:550});
-		}
 	}
 });
 
@@ -100,13 +29,12 @@ snow.ui.registerComponent("mainScreen",
 <script id="tmpl-mainScreen" type="text/html">
 <div>
 	<div>
-    	<button class="motionChartBtn" data-rows='2'>show motion chart for 2 rows</button>
-    	<button class="motionChartBtn" data-rows='3'>show motion chart for 3 rows</button>
-    	<button class="motionChartBtn" data-rows='10'>show motion chart for 10 rows</button>
-    	<button class="motionChartBtn" data-rows=''>show motion chart for all rows</button>
+    	<button class="motionChartBtn" data-scenario='BAU'>Add BAU Motion Chart</button>
+    	<button class="motionChartBtn" data-scenario='others'>Add Other Scenario Motion Chart</button>
     </div>
-	<div>
-		<div class="motion_chart" style="width:1260px;height:550px;">Motion chart (web server required)</div>
+	<div class="container">
+		<div class="flash_container first"></div>
+		<div class="flash_container second"></div>
 	</div>
 <div>
 </script>

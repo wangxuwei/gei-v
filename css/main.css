@@ -4,3 +4,13 @@
 }
 
 html,body{height:100%}
+
+button{
+ 	padding: 7px 5px;
+}
+
+.flash_container{
+	float:left;
+	width:630px;
+	height:420px;
+}

@@ -1,0 +1,47 @@
+<script type="text/javascript">
+snow.ui.registerComponent("motionChart", 
+	{
+    parent: ".flash_container.second",
+	emptyParent:true
+	}, 
+	{
+	build: function(){
+		var $e = $("#tmpl-motionChart").render({});
+		return $e;
+	}, 
+	postDisplay: function(data){
+		var component = this;
+		data = data || {};
+		if(!data.scenario){
+			data.scenario = "BAU";
+		}
+		var condition = " where 'Scenario' = '"+data.scenario+"'";
+		drawChartFromMotionData(condition);
+		
+		/* --------- new way to get data ---------*/
+		function drawChartFromMotionData(condition) {
+			var query = getMotionQuery(condition);
+			query.send(getMotionDataCallback);
+		}
+		
+		function getMotionQuery(condition){
+			var columns = "'Name','Year','Scenario','Category','SubCategory','Value'";
+			var queryText = encodeURIComponent("SELECT "+columns+" FROM " + gei.fusionTableId + condition);
+			var query = new google.visualization.Query('http://www.google.com/fusiontables/gvizdata?tq='  + queryText);
+			return query;
+		}
+		
+		function getMotionDataCallback(response) {
+			var tableData = response.getDataTable();
+			var chart = new google.visualization.MotionChart(component.$element[0]);
+	        chart.draw(tableData, {width:600, height:400});
+		}
+		/* --------- /new way to get data ---------*/
+	}
+});
+
+</script>
+
+<script id="tmpl-motionChart" type="text/html">
+<div class="motion_chart" style="width:600px;height:400px;"><label>querying data...</label></div>
+</script>
