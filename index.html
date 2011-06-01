@@ -4,33 +4,36 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>GEI-V</title>
 		<link rel="stylesheet" type="text/css" href="css/main.css" />
-		<link rel="stylesheet" type="text/css" href="css/scenarioSelect.css" />
-		<link rel="stylesheet" type="text/css" href="css/motionChart.css" />
 
 		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/jquery.render.js"></script>
-		<script type="text/javascript" src="js/snow.core.js"></script>
-		<script type="text/javascript" src="js/snow.event.js"></script>
-		<script type="text/javascript" src="js/snow.dm.js"></script>
-		<script type="text/javascript" src="js/snow.fx.js"></script>
+		<script type="text/javascript" src="js/jquery.gei.js"></script>
 		
 		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 		<script type="text/javascript"> 
 	      // Load the Visualization API and the motionchart package.
 	      google.load('visualization', '1', {'packages':['motionchart']});
 		  var gei = gei || {} ;
-		  gei.fusionTableId = "896069";
+		  gei.fusionTableId = "929855";
 	    </script> 
     </head>
     <body>
 
     	<div id="page">
-		
+			<div>
+				<div>
+			    	<button class="motionChartBtn">show Motion Chart</button>
+			    </div>
+				<div class="container">
+					<div class="flash_container"></div>
+				</div>
+			<div>
 		</div> 
 
 		<script>
 			$(document).ready(function(){
-				snow.ui.display('mainScreen');
+				$(".motionChartBtn").click(function(){
+					$(".flash_container").gei();
+				});
 			});
 		</script>
     </body>
