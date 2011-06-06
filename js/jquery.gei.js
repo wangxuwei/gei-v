@@ -12,7 +12,7 @@
       var _typeHandler = {
     		  type1:{
       			drawChart:function($chart){
-	      	    	  var columns = "'Scenario','Year','Scenario','Value' as 'GDP','emission-emission-total' as 'Emissions'";
+	      	    	  var columns = "'Scenario','Year','Scenario','Value' as 'GDP','Total' as 'Emissions'";
 	      	    	  var condition = " WHERE Year <= '2030'"
 	      	    	  var queryText = encodeURIComponent("SELECT "+columns+" FROM " + gei.fusionTableId + condition );
 	      	    	  // create a query
